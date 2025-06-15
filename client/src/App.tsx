@@ -2,6 +2,15 @@ import { Switch, Route } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
+import CloudinaryDebug from "./components/debug/CloudinaryDebug";
+
+// Initialize debug logging
+if (import.meta.env.DEV) {
+  console.log('Environment Variables:', {
+    VITE_CLOUDINARY_CLOUD_NAME: import.meta.env.VITE_CLOUDINARY_CLOUD_NAME,
+    VITE_CLOUDINARY_API_KEY: import.meta.env.VITE_CLOUDINARY_API_KEY ? '***' : 'Not set'
+  });
+}
 import NotFound from "@/pages/not-found";
 import HomePage from "@/pages/HomePage";
 import ServicePage from "@/pages/ServicePage";
@@ -59,6 +68,7 @@ function Router() {
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
+      {import.meta.env.DEV && <CloudinaryDebug />}
       <Router />
       <Toaster />
     </QueryClientProvider>

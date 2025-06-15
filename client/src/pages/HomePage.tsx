@@ -10,6 +10,7 @@ import AboutSection from "@/components/home/AboutSection";
 import Statistics from "@/components/home/Statistics";
 import ContactSection from "@/components/home/ContactSection";
 import CallToAction from "@/components/home/CallToAction";
+import RecognizedByCelebrities from "@/components/home/RecognizedByCelebrities";
 
 const HomePage = () => {
   const [showBackToTop, setShowBackToTop] = useState(false);
@@ -43,6 +44,7 @@ const HomePage = () => {
       
       <main>
         <HeroSlider />
+        <RecognizedByCelebrities />
         <ServiceCards />
         <FeaturedTechnologies />
         <Gallery />

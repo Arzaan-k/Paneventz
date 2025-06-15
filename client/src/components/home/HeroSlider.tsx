@@ -3,42 +3,76 @@ import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 import { scrollToSection } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
-
+import cloudinaryClient from "@/lib/cloudinaryClient";
 interface CTA {
   text: string;
   link: string;
 }
 
 interface Slide {
-  id: number;
+  id: string;
   title: string;
   titleHighlight: string;
   description: string;
   backgroundImage: string;
-  primaryCta?: {
-    text: string;
-    link: string;
-  };
-  secondaryCta?: {
-    text: string;
-    link: string;
-  };
+  primaryCta?: CTA;
+  secondaryCta?: CTA;
 }
 
 const HeroSlider = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
 
-  // Fetch slider data
-  const { data: slides = [], isLoading } = useQuery({
-    queryKey: ['/api/slides'],
-    queryFn: () => fetch('/api/slides').then(res => res.json()),
+  // Fetch slider data from Cloudinary
+  const { data: slides = [], isLoading, isError, error } = useQuery({
+    queryKey: ['cloudinary-slides'],
+    queryFn: async () => {
+      console.log('Fetching slide banners from Cloudinary...');
+      try {
+        const assets = await cloudinaryClient.getSlideBannerImages();
+        console.log('Received assets from Cloudinary:', assets);
+        
+        if (!assets || assets.length === 0) {
+          console.warn('No slide banners found in Cloudinary');
+          return [];
+        }
+        
+        const formattedSlides = assets.map((asset, index) => {
+          const imageUrl = cloudinaryClient.getBannerImageUrl(asset.public_id);
+          console.log(`Generated image URL for ${asset.public_id}:`, imageUrl);
+          
+          return {
+            id: asset.public_id || `slide-${index}`,
+            title: "Creating",
+            titleHighlight: "Memorable",
+            description: "Pan Eventz - Your trusted partner for extraordinary corporate events, weddings, and celebrations.",
+            backgroundImage: imageUrl,
+            primaryCta: { text: "Our Services", link: "services" },
+            secondaryCta: { text: "Contact Us", link: "contact" }
+          };
+        });
+        
+        return formattedSlides;
+      } catch (err) {
+        console.error('Error fetching slide banners:', err);
+        throw err;
+      }
+    },
+    retry: 2,
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
+  
+  // Log any errors
+  useEffect(() => {
+    if (error) {
+      console.error('Error in HeroSlider query:', error);
+    }
+  }, [error]);
 
   // Fallback slides if API fails or is loading
   const fallbackSlides: Slide[] = [
     {
-      id: 1,
+      id: "fallback-1",
       title: "Creating",
       titleHighlight: "Memorable",
       description: "Pan Eventz - Your trusted partner for extraordinary corporate events, weddings, and celebrations.",
@@ -53,7 +87,7 @@ const HeroSlider = () => {
       }
     },
     {
-      id: 2,
+      id: "fallback-2",
       title: "Stunning",
       titleHighlight: "Wedding",
       description: "We bring your dream wedding to life with impeccable planning and magical execution.",
@@ -68,7 +102,7 @@ const HeroSlider = () => {
       }
     },
     {
-      id: 3,
+      id: "fallback-3",
       title: "Spectacular",
       titleHighlight: "Cultural",
       description: "From TED Talks to music festivals, we create immersive cultural experiences that inspire.",
@@ -85,7 +119,7 @@ const HeroSlider = () => {
   ];
 
   // Use actual slides or fallback
-  const displaySlides = slides.length > 0 ? slides : fallbackSlides;
+  const displaySlides = (isLoading || isError || slides.length === 0) ? fallbackSlides : slides;
 
   const nextSlide = useCallback(() => {
     if (isAnimating) return;
