@@ -3,25 +3,25 @@ import { cn } from "@/lib/utils";
 const celebrities = [
   {
     id: 1,
-    name: "Celebrity 1",
+    name: "Mr. Aamir Khan",
     imageUrl: "https://res.cloudinary.com/dhxetyrkb/image/upload/v1749971932/images%20with%20celeb/dnnvnjanjzyfqglcisfb.jpg",
     role: "Bollywood Actor"
   },
   {
     id: 2,
-    name: "Celebrity 2",
+    name: "Mr. Mukesh Ambani",
     imageUrl: "https://res.cloudinary.com/dhxetyrkb/image/upload/v1749971931/images%20with%20celeb/eljvini6pe8qitbsughf.jpg",
-    role: "Bollywood Actress"
+    role: "Businessman"
   },
   {
     id: 3,
-    name: "Celebrity 3",
+    name: "Mr. Neil Nitin Mukesh",
     imageUrl: "https://res.cloudinary.com/dhxetyrkb/image/upload/v1749971931/images%20with%20celeb/zihmmsyakdk3nwzzp7vk.jpg",
-    role: "Bollywood Star"
+    role: "Actor"
   },
   {
     id: 4,
-    name: "Celebrity 4",
+    name: "Mr. Aamir Khan",
     imageUrl: "https://res.cloudinary.com/dhxetyrkb/image/upload/v1749971931/images%20with%20celeb/hxcoapvwqjk7io6po7ak.jpg",
     role: "Bollywood Star"
   }
